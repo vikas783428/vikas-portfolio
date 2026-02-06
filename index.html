@@ -200,11 +200,114 @@
   <button class="toggle" id="themeToggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌙</button>
 
   <!-- WhatsApp -->
-  <a>
-     https://wa.me/918217312599
-     https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg
- </a>
+ <!-- WhatsApp Floating Button (Top-Right) with Ripple + Tooltip (Left) -->
+https://wa.me/918217312599
+  https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg
 
+  <!-- Tooltip on the LEFT (best for top-right placement) -->
+  <span class="wa-tooltip" style="
+      position: absolute;
+      right: 58px;           /* place to the left of the button */
+      top: 50%;
+      transform: translateY(-50%) translateX(6px);
+      background: rgba(17, 24, 39, 0.95);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    ">
+    Chat on WhatsApp
+    <!-- caret pointing right towards the button -->
+    <span style="
+      position:absolute;
+      left:100%;
+      top:50%;
+      transform:translateY(-50%);
+      width:0;height:0;
+      border-top:6px solid transparent;
+      border-bottom:6px solid transparent;
+      border-left:6px solid rgba(17, 24, 39, 0.95);
+    "></span>
+  </span>
+</a>
+
+<style>
+  /* Click press effect */
+  #whatsappBtn:active {
+    transform: scale(0.92);
+  }
+
+  /* Optional hover lift */
+  #whatsappBtn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Show tooltip on hover/focus (keyboard accessible) */
+  #whatsappBtn:hover .wa-tooltip,
+  #whatsappBtn:focus .wa-tooltip,
+  #whatsappBtn:focus-visible .wa-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* Ripple animation */
+  @keyframes wa-ripple {
+    from { transform: translate(-50%,-50%) scale(0); opacity: .45; }
+    to   { transform: translate(-50%,-50%) scale(6); opacity: 0; }
+  }
+
+  .wa-ripple {
+    position: absolute;
+    top: var(--y, 50%);
+    left: var(--x, 50%);
+    width: 12px;
+    height: 12px;
+    background: rgba(255,255,255,.7);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%,-50%) scale(0);
+    animation: wa-ripple .5s ease-out forwards;
+    mix-blend-mode: soft-light;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    #whatsappBtn { transition: none; }
+    .wa-ripple { animation: none; }
+  }
+</style>
+
+<script>
+  // Add a ripple on click at the touch/click position
+  (function () {
+    const btn = document.getElementById('whatsappBtn');
+
+    function addRipple(e) {
+      const rect = btn.getBoundingClientRect();
+      const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+      const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      const ripple = document.createElement('span');
+      ripple.className = 'wa-ripple';
+      ripple.style.setProperty('--x', x + 'px');
+      ripple.style.setProperty('--y', y + 'px');
+
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    }
+
+    btn.addEventListener('click', addRipple);
+    btn.addEventListener('touchstart', addRipple, { passive: true });
+  })();
+</script>
   <!-- NAV -->
   <nav class="nav" aria-label="Primary">
     <div class="nav-inner">
@@ -214,7 +317,7 @@
         #projectsProjects</a>
         #skillsSkills</a>
         #contact</a>
-        resume.pdfResume</a>
+        #resume.pdfResume</a>
       </div>
     </div>
   </nav>
@@ -383,4 +486,5 @@
   </script>
 </body>
 </html>
+
 
